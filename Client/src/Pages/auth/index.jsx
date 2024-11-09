@@ -5,16 +5,34 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import {Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import apiClient from '@/lib/api-client'
-import { SIGNUP_ROUTE } from '@/Utils/constants'
+import { apiClient } from '@/lib/api-client'
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/Utils/constants'
+import { useNavigate } from 'react-router-dom'
+import { useAppStore } from '@/store'
 
 
 
 
-const auth =() => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
+const auth = () => {
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const { setUserInfo } = useAppStore();
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState(""); 
+
+    
+    const validateLogin = () => {
+        if(!email.length){
+            toast.error("Email is Required.");
+            return false;
+        }
+        if(!password.length){
+            toast.error("Password is Required.");
+            return false;
+        }
+        
+        return true;
+    }
 
     const validateSignUp = () => {
         if(!email.length){
@@ -25,24 +43,41 @@ const auth =() => {
             toast.error("Password is Required.");
             return false;
         }
-        if(password != confirmPassword){
+        if(password !== confirmPassword){
             toast.error("Password and confirm password should be same.")
             return false;
         }
         return true;
-    }
+    };
 
     const handeleLogin = async() => {
-        console.log("Logged In")
+        if(validateLogin()) {
+            const response = await apiClient.post(
+                LOGIN_ROUTE,
+                {email, password},
+                {withCredentials:true}
+            );
+            if(response.data.user.id){
+                setUserInfo(response.data.user);
+                if(response.data.profileSetup){
+                    navigate("/chat");
+                    console.log("navigate to chat ");
+                }else { 
+                    navigate("/profile");
+                    console.log("navigate to profile ");}
+            };
+            console.log({response});
+        }
     };
     const handleSignUp = async() => {
-        if (!validateSignUp()) return;
-        try {
-            const response = await apiClient.post(SIGNUP_ROUTE, { email, password });
-            console.log(response.data);
-        } catch (error) {
-            console.error("Signup error:", error.response ? error.response.data : error.message);
-        }
+        if(validateSignUp()){
+            const response = await apiClient.post(SIGNUP_ROUTE, { email, password }, {withCredentials:true});
+            console.log({response});
+            if(response.status === 201){
+                setUserInfo(response.data.user);
+                navigate("/profile");
+            }
+        };
     };
     
     return(

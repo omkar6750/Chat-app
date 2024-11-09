@@ -1,9 +1,10 @@
 import { HOST }  from '@/Utils/constants';
-import  axios  from 'axios';
+//changed from '' to ""
+import  axios  from "axios";
 
 
-const apiClient = axios.create({
-    baseURL: HOST
-})
+export const apiClient = axios.create({
+   //added coma
+    baseURL: HOST,
+});
 
-export default apiClient
