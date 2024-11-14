@@ -1,9 +1,8 @@
 import { compare } from "bcrypt";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
-import { request, response } from "express";
-import { renameSync, unlinkSync, existsSync } from 'fs'
-import fs from 'fs';
+
+import { renameSync, unlinkSync, } from 'fs'
 
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 const createToken = (email, userId) => {
@@ -91,7 +90,7 @@ export const getUserInfo = async (request,response,next) => {
         console.error("Error is here", error);
         return response.status(500).send("Internal Server Error");
     }
-    next();
+    
 };
 
 export const updateProfile = async (request,response,next) => {
@@ -119,7 +118,7 @@ export const updateProfile = async (request,response,next) => {
         console.error("Error is here", error);
         return response.status(500).send("Internal Server Error");
     }
-    next();
+    
 };
 
 export const addProfileImage = async(request, response, next) => {
@@ -129,19 +128,18 @@ export const addProfileImage = async(request, response, next) => {
         }
         
         const date = Date.now();
-        let fileName = "uploads/profiles" + date + request.file.originalname;
-        renameSync(request.file.path, fileName);
+        let fileName = "uploads/profiles/" + date + request.file.originalname;
+        renameSync(request.file.path , fileName);
 
         const updatedUser = await User.findByIdAndUpdate(
             request.userId, 
             {image:fileName}, 
-            {new:true, runValidators:true})
-
+            {new:true, runValidators:true});
+            
 
         return response.status(200).json({
            image: updatedUser.image,
-     });
-
+        });
 
     }catch (error) {
         console.error("Error is here ", error);
