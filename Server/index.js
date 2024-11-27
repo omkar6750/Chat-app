@@ -5,6 +5,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import authRoutes from "./routes/AuthRoutes.js";
 import ContactsRoutes from "./routes/ContactRoutes.js";
+import setupSocket from "./socket.js";
  
 dotenv.config();
 
@@ -30,5 +31,6 @@ const server = app.listen(port, () =>{
     console.log(`server is running at http://localhost:${port}`)
 })
 
+setupSocket(server);
 
 mongoose.connect(databaseURL).then(()=> console.log("DB conection successful")).catch(err=> console.log(err.message))

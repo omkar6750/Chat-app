@@ -24,11 +24,12 @@ import { apiClient } from "@/lib/api-client"
 import { HOST, SEARCH_CONTACTS_ROUTE } from "@/Utils/constants"
 import { Avatar } from "@radix-ui/react-avatar"
 import { AvatarImage } from "@/components/ui/avatar"
+import { useAppStore } from "@/store"
 
 
 
 const NewDM = () => {
-
+    const {setSelectedChatType, setSelectedChatData} = useAppStore();
     const [openNewContactModal, setOpenNewContactModal] = useState(false)
     const searchContacts = async(searchTerm) =>{
         try {
@@ -49,6 +50,8 @@ const NewDM = () => {
     const [searchedContacts, setSearchedContacts] = useState([]);
     const selectNewContact = (contact) => {
         setOpenNewContactModal(false);
+        setSelectedChatType("contact");
+        setSelectedChatData(contact);
         setSearchedContacts([])
     }
 
@@ -79,6 +82,9 @@ const NewDM = () => {
                     <input type="text" placeholder="Search Contacts" className="w-[350px] rounded-lg p-3 bg-[#2c2e3b] border-none "
                     onChange={(e)=> searchContacts(e.target.value)} />
                 </div>
+                {
+                    searchedContacts.length > 0 && 
+                (
                 <ScrollArea className="h-[250px]  ">
                     <div className="flex flex-col gap-5 ">
                         {searchedContacts.map((contact) =>
@@ -94,7 +100,7 @@ const NewDM = () => {
                                         <AvatarImage
                                         src={`${HOST}/${contact.image}`}
                                         alt='profile'
-                                        className='object-cover bg-black w-full h-full'/>
+                                        className='object-cover bg-black w-full h-full rounded-full'/>
                                         ) : (
                                         <div
                                             className={`uppercase h-12 w-12  text-xl border-[1px] flex items-center justify-center rounded-full ${getColor(contact.color)}`}>
@@ -118,10 +124,11 @@ const NewDM = () => {
                         )}
                     </div>
                 </ScrollArea>
+                )}
                 {
                     searchedContacts.length<=0 && 
                     
-                        <div className='flex-1 md:bg-[#181920] md:flex flex-col justify-center items-center duration-1000 transition-all mt-5'>
+                        <div className='flex-1 md:flex flex-col justify-center items-center duration-1000 transition-all mt-5'>
                             <Lottie
                             isClickToPauseDisabled={true}
                             height={100}
@@ -130,7 +137,7 @@ const NewDM = () => {
                             ></Lottie>
                             <div className='text-opacity-80 text-white flex flex-col gap-5 items-center mt-5 lg:text-4xl text-3xl transition-all duration-300 text-center'>
                                 <h3 className='poppins-medium'>
-                                Hi <span className='text-purple-500'>! </span> Seach New 
+                                Hi <span className='text-purple-500'>! </span> Search New 
                                 <span className='text-purple-500 '> Contact </span><span className='text-purple-500'>.</span>
                                 </h3>
 
