@@ -20,24 +20,23 @@ const MessageBar = () => {
 
   const handlSendMessage = async() =>{
     if(selectedChatType === "dm"){
-      socket.emit("sendMessage", {
+      await socket.emit("sendMessage", {
         sender: userInfo.id,
         recipient: selectedChatData._id,
         messageType:"text",
         content: message,
         fileUrl: undefined,
       });
+    } else if (selectedChatType === "channel"){
+      await socket.emit("sendChannelMessage", {
+        sender: userInfo.id,
+        channelId: selectedChatData._id,
+        messageType: "text",
+        content: message,
+        fileUrl: undefined,
+      })
     }
-    // else if (selectedChatType === "channel"){
-    //   socket.emit("sendChannelMessage", {
-    //     sender: userInfo.id,
-    //     channelId: selectedChatData._id,
-    //     messageType: "text",
-    //     content: message,
-    //     fileUrl: undefined,
-    //   })
-    // }
-    
+    setMessage("")    
   }
 
   const handleAttactmentClick = () => {
@@ -72,15 +71,15 @@ const MessageBar = () => {
             fileUrl: response.data.filePath,
           });
         }
-        // else if(selectedChatType === "channel"){
-        //   socket.emit("sendChannelMessage", {
-        //     sender: userInfo.id,
-        //     channelId: selectedChatData._id,
-        //     messageType: "file",
-        //     content: "",
-        //     fileUrl,
-        //   });
-        // }
+        else if(selectedChatType === "channel"){
+          socket.emit("sendChannelMessage", {
+            sender: userInfo.id,
+            channelId: selectedChatData._id,
+            messageType: "file",
+            content: "",
+            fileUrl: response.data.filePath ,
+          });
+        }
       }
     }
 

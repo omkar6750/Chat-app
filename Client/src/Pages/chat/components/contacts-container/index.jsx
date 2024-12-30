@@ -21,13 +21,11 @@ const ContactsContainer = () => {
     const getUserChannels = async() => {
       const response = await apiClient.get(GET_USER_CHANNEL_ROUTE, {withCredentials:true});
       if(response.data.channels){
-        setChannels(response.data.channels)
-        console.log(channels)
+        setChannels(response.data.channels);
       }
+
     }
     getUserChannels();
-    
-    
     getContacts();
   },[setChannels, setDirectMessageContacts])
   return (
@@ -41,7 +39,7 @@ const ContactsContainer = () => {
           <NewDM />
         </div>
         <div className='max-h-[38vh] overflow-y-auto '>
-          <ContactList  contacts={directMessageContacts} isChannel={false}/>
+          <ContactList  contacts={directMessageContacts} />
         </div>
       </div>
       <div className='my-5'>

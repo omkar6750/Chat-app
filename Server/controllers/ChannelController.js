@@ -47,7 +47,6 @@ export const getUserChannels = async(request, response, next) => {
 
 export const getChannelMessages = async(request, response, next) => {
     try{
-
         const {channelId} = request.params;
         const channel = await Channel.findById(channelId).populate({
             path: "messages",

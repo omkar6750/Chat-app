@@ -54,31 +54,25 @@ const ContactList = ({contacts, isChannel}) => {
                             }
                             </Avatar>
                         </div>
-                        <div>
-                        {
-                          contact.firstName && contact.lastName ?
-                          `${contact.firstName} ${contact.lastName}` : ""
-                        }
-                        </div>
                     </div>
                   )
                 
                 }
                 {
-                isChannel && (
-                    <div  className="flex gap-5 items-center justify-start text-neutral-300  ">
+                    isChannel && (
                         <div
                                 className={`uppercase h-10 w-10  text-xl border-[1px] flex items-center justify-center rounded-full ${getColor(0)}`}>
-                                {/* {contact.name.split("").shift() } */}
-                                <p>#</p>
+                                {contact.name.split("").shift() }
+                                {/* <p>#</p> */}
                         </div>
-                        <div className='h-10 bg-[#fffff22] flex items-center justify-center rounded-full'>
-                            {
-                                contact.name? contact.name : null
-                            }
-                        </div>
-                    </div>
                 )
+                }
+                {
+                    isChannel ? (
+                        <span>{contact.name}</span>
+                    ):(
+                        <span>{`${contact.firstName} ${contact.lastName}`}</span>
+                    )
                 }
             </div>
             

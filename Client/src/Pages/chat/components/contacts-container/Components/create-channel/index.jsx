@@ -37,7 +37,6 @@ const CreateChannel = () => {
         const getData = async () =>{
             const response = await apiClient.get(GET_ALL_CONTACTS_ROUTE, {withCredentials:true})
             setAllContacts(response.data.contacts)
-            console.log("all contacts:",response.data.contacts)
         };
         getData();
     }, [])
@@ -53,8 +52,7 @@ const CreateChannel = () => {
                 setChannelName("");
                 setSelectedContacts([]);
                 setNewChannelModal(false);
-                addChannel(response.data.channel);
-                setSelectedChatData(response.data.channel)
+                addChannel(response.data.Channel);
             }
         }
         

@@ -16,7 +16,8 @@ const ChatHeader = () => {
 
               {
                 selectedChatType === 'dm'
-                ?<Avatar className='h-12 w-12 rounded-full overflow-hidden'>
+                ?
+                <Avatar className='h-12 w-12 rounded-full overflow-hidden'>
                   {
                     selectedChatData.image ? (
                       <AvatarImage
@@ -32,7 +33,8 @@ const ChatHeader = () => {
                       </div>
                     )
                   }
-                </Avatar>: 
+                </Avatar>
+                : 
                 <div  className="flex gap-5 items-center justify-start text-neutral-300  ">
                   <div
                           className={`uppercase h-10 w-10  text-xl border-[1px] flex items-center justify-center rounded-full ${getColor(0)}`}>
