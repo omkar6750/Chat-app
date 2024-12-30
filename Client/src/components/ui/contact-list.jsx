@@ -29,7 +29,7 @@ const ContactList = ({contacts, isChannel}) => {
     <div className='mt-5'>{
         contacts.map((contact) => (
             <div key={contact._id} 
-            className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${selectedChatData && selectedChatData._id  === contact._id ? "bg-[#8417ff] hover:bg-[#8417ff] ":"hover:bg-[#f1f1f111]"}`}
+            className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${selectedChatData && selectedChatData._id  === contact._id ? "bg-[#8417ff] hover:bg-[#8417ff]/80 ":"hover:bg-[#f1f1f111]"}`}
             onClick={() => handleClick(contact)}
             >
             <div className="flex gap-5 items-center justify-start text-neutral-300  ">
@@ -61,7 +61,7 @@ const ContactList = ({contacts, isChannel}) => {
                 {
                     isChannel && (
                         <div
-                                className={`uppercase h-10 w-10  text-xl border-[1px] flex items-center justify-center rounded-full ${getColor(0)}`}>
+                                className={`uppercase h-10 w-10  text-xl border-[1px] flex items-center justify-center rounded-full ${getColor(1)}`}>
                                 {contact.name.split("").shift() }
                                 {/* <p>#</p> */}
                         </div>

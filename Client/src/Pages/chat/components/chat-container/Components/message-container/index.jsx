@@ -55,7 +55,7 @@ const MessageContainer = () => {
   
   useEffect(() => {
     if(scrollRef.current){
-      scrollRef.current.scrollIntoView({behavior:"smooth"});
+      scrollRef.current.scrollIntoView({behavior:"auto"});
     }
   }, [selectedChatMessages])
 
@@ -118,14 +118,14 @@ const MessageContainer = () => {
       <div className={`${message.sender !== selectedChatData._id? "text-right":"text-left"}`}>
         
         {message.messageType === "text" && (
-          <div className={`${message.sender !== selectedChatData._id? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
+          <div className={`${message.sender !== selectedChatData._id? "bg-[#8417ff]/5 text-white/80 border-[#8417ff]/90":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
           {message.content}
           </div>
         )
         }
         {
           message.messageType === "file" && (
-            <div className={`${message.sender !== selectedChatData._id? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
+            <div className={`${message.sender !== selectedChatData._id? "bg-[#8417ff]/5 text-white/80 border-[#8417ff]/90":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
               {
                 checkIfImage(message.fileUrl)
                 ? <div className='cursor-pointer'
@@ -169,14 +169,14 @@ const MessageContainer = () => {
       <div className={`mt-5 ${message.sender._id === userInfo.id ? "text-right" : "text-left" } `}>
         {
           message.messageType === "text" && (
-          <div className={`${message.sender._id === userInfo.id? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words ml-9 `}>
+          <div className={`${message.sender._id === userInfo.id? "bg-[#8417ff]/5 text-white/80 border-[#8417ff]/90":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words ml-9 `}>
           {message.content}
           </div>
           )
         }
         {
           message.messageType === "file" && (
-            <div className={`${message.sender._id === userInfo.id? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
+            <div className={`${message.sender._id === userInfo.id? "bg-[#8417ff]/5 text-white/80 border-[#8417ff]/90":"bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20" } border inline-block p-4 rounded my-1 max-w-[50%] break-words `}>
               {
                 checkIfImage(message.fileUrl)
                 ? <div className='cursor-pointer'
@@ -254,7 +254,7 @@ const MessageContainer = () => {
     )
   }
   return (
-    <div className='flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full'>
+    <div style={{ background: 'linear-gradient(135deg, #221c3c, #1c1d25)'}} className='flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full bg-gradient-to-t'>
       {renderMessages()}
       <div ref={scrollRef}></div>
       {

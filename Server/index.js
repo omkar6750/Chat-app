@@ -32,9 +32,10 @@ app.use("/api/contacts", ContactsRoutes)
 app.use('/api/messages', messagesRoutes)
 app.use("/api/channels", channelRoutes)
 
+
 const server = app.listen(port, () =>{
     console.log(`server is running at http://localhost:${port}`)
-})
+}) 
 
 setUpSocket(server);
 
