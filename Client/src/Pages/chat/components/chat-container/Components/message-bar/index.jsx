@@ -18,8 +18,8 @@ const MessageBar = () => {
   const [emoiPickerOpen, setEmojiPickerOpen] = useState(false);
   const socket = useSocket();
 
-  const handlSendMessage = async() =>{
-    if(selectedChatType === "dm"){
+  const handleSendMessage = async() =>{
+    if(selectedChatType === "dm" && message.length > 0){
       await socket.emit("sendMessage", {
         sender: userInfo.id,
         recipient: selectedChatData._id,
@@ -27,7 +27,7 @@ const MessageBar = () => {
         content: message,
         fileUrl: undefined,
       });
-    } else if (selectedChatType === "channel"){
+    } else if (selectedChatType === "channel" && message.length > 0){
       await socket.emit("sendChannelMessage", {
         sender: userInfo.id,
         channelId: selectedChatData._id,
@@ -71,7 +71,7 @@ const MessageBar = () => {
             fileUrl: response.data.filePath,
           });
         }
-        else if(selectedChatType === "channel"){
+        else if(selectedChatType === "channel" ){
           socket.emit("sendChannelMessage", {
             sender: userInfo.id,
             channelId: selectedChatData._id,
@@ -107,8 +107,8 @@ const MessageBar = () => {
   }, [emojiRef])
 
   return (
-    <div className='h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-6 gap-6'>
-      <div className="flex-1 flex bg-[#2a2b33] rounded-lg items-center gap-5 pr-5">
+    <div className='h-[10vh] bg-[#1c1d25] flex justify-center items-center px-8 mb-4 gap-6 border-t-2 border-[#2f303b]'>
+      <div className="flex-1 flex bg-[#2a2b33] rounded-lg items-center gap-5 pr-5 mt-4">
         <input type="text" 
         className='flex-1 p-4 bg-transparent rounded-md focus:border-none focus:outline-none'  placeholder='Enter message here'
         value={message}
@@ -140,8 +140,8 @@ const MessageBar = () => {
           </div>
         </div>
       </div>
-      <button className='bg-[#8471ff] rounded-md  flex items-center justify-center p-4 hover:bg-[#741bda] focus:border-none focus:bg-[#741bda] focus:outline-none focus:text-white duration-300 transition-all'
-      onClick={handlSendMessage}
+      <button className='bg-[#8417ff] rounded-md mt-5 flex items-center justify-center p-4 hover:bg-[#8417ff]/80 focus:border-none focus:bg-[#8417ff]/70 focus:outline-none focus:text-white duration-300 transition-all'
+      onClick={handleSendMessage}
       >
           <IoSend className='text-2xl' />
       </button>
