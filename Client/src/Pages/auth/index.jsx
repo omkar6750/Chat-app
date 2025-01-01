@@ -53,7 +53,7 @@ const auth = () => {
             case "email-password-required":
                 toast.error("Email and Password are required.");
                 break;
-            case "password-short":
+            case "password-too-short":
                 toast.error("Password is too short.");
                 break;
             case "password-missing-letter":
@@ -77,28 +77,42 @@ const auth = () => {
             case "internal-server-error":
                 toast.error("An unexpected error occurred. Please try again later.");
                 break;
+            case "email-password-required":
+                toast.error("Email and password are required.");
+                break;
+            case "user-not-found":
+                toast.error("User not found.");
+                break;
+            case "password-incorrect":
+                toast.error("Password is incorrect.");
+                break;
             default:
                 toast.error("An unknown error occurred.");
         }
     }
 
     const handeleLogin = async() => {
-        if(validateLogin()) {
-            const response = await apiClient.post(
-                LOGIN_ROUTE,
-                {email, password},
-                {withCredentials:true}
-            );
-            if(response.data.user.id){
-                setUserInfo(response.data.user);
-                if(response.data.profileSetup){
-                    navigate("/chat");
-                    console.log("navigate to chat ");
-                }else { 
-                    navigate("/profile");
-                    console.log("navigate to profile ");}
-            };
+        try {
+            if(validateLogin()) {
+                const response = await apiClient.post(
+                    LOGIN_ROUTE,
+                    {email, password},
+                    {withCredentials:true}
+                );
+                if(response.data.user.id){
+                    setUserInfo(response.data.user);
+                    if(response.data.profileSetup){
+                        navigate("/chat");
+                        console.log("navigate to chat ");
+                    }else { 
+                        navigate("/profile");
+                        console.log("navigate to profile ");}
+                };
+            }
+        } catch (error) {
+            handleError(error.response.data.error);
         }
+        
     };
     const handleSignUp = async() => {
         if(validateSignUp()){

@@ -26,7 +26,7 @@ export const signup = async (request,response,next) => {
             return response.status(400).json({ error: "password-missing-digit" });
         }
         
-        if (password.length < 8) {
+        if (password.length < 6) {
             return response.status(400).json({ error: "password-too-short" });
         }
         
@@ -65,15 +65,15 @@ export const login = async (request,response,next) => {
     try{
         const { email, password } = request.body;
         if(!email || !password){
-            return response.status(400).send("Email and Password are Required.")
+            return response.status(400).json({error: "email-password-required"})
         }
         const user = await User.findOne({email});
         if(!user){
-            return response.status(404).send("User Not Found.")
+            return response.status(404).json({error: "user-not-found"})
         }
         const auth = await compare(password, user.password);
         if(!auth){
-            return response.status(400).send("Password is incorrect.")
+            return response.status(400).json({error: "password-incorrect"})
         }
         response.cookie("jwt", createToken(email, user.id), {
             maxAge,
