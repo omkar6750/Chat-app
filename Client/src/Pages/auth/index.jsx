@@ -10,9 +10,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '@/store'
 
 
-
-
-
 const auth = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -50,6 +47,41 @@ const auth = () => {
         return true;
     };
 
+    const handleError = (data) => {
+        
+        switch (data) {
+            case "email-password-required":
+                toast.error("Email and Password are required.");
+                break;
+            case "password-short":
+                toast.error("Password is too short.");
+                break;
+            case "password-missing-letter":
+                toast.error("Password must contain at least one letter.");
+                break;
+            case "password-missing-digit":
+                toast.error("Password must contain at least one digit.");
+                break;
+            case "password-missing-special-character":
+                toast.error("Password must contain at least one special character (@, $, !, %, *, ?, &).");
+                break;
+            case "password-invalid-characters":
+                toast.error("Password contains invalid characters. Only letters, digits, and specific special characters are allowed.");
+                break;
+            case "email-invalid":
+                toast.error("Email is invalid.");
+                break;
+            case "email-listed":
+                toast.error("Email is already registered.");
+                break;
+            case "internal-server-error":
+                toast.error("An unexpected error occurred. Please try again later.");
+                break;
+            default:
+                toast.error("An unknown error occurred.");
+        }
+    }
+
     const handeleLogin = async() => {
         if(validateLogin()) {
             const response = await apiClient.post(
@@ -66,18 +98,23 @@ const auth = () => {
                     navigate("/profile");
                     console.log("navigate to profile ");}
             };
-            console.log({response});
         }
     };
     const handleSignUp = async() => {
         if(validateSignUp()){
-            const response = await apiClient.post(SIGNUP_ROUTE, { email, password }, {withCredentials:true});
-            console.log({response});
-            if(response.status === 201){
-                setUserInfo(response.data.user);
-                navigate("/profile");
+            try {
+                const response = await apiClient.post(SIGNUP_ROUTE, { email, password }, {withCredentials:true});
+                if(response.status === 201){
+                    setUserInfo(response.data.user);
+                    navigate("/profile");
+                }
+            } catch (error) {
+                console.log("error", error.response.data.error);
+                handleError(error.response.data.error);
             }
-        };
+            
+            
+        }
     };
     
     return(

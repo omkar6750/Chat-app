@@ -13,8 +13,35 @@ export const signup = async (request,response,next) => {
     try{
         const { email, password } = request.body;
         if(!email || !password){
-            return response.status(400).send("Email and Password are Required")
+            return response.status(400).json({error: "email-password-required"})
         }
+        if(!email.includes("@") || !email.includes(".")){
+            return response.status(400).json({error: "email-invalid"})
+        }
+        if (!password.match(/[A-Za-z]/)) {
+            return response.status(400).json({ error: "password-missing-letter" });
+        }
+        
+        if (!password.match(/\d/)) {
+            return response.status(400).json({ error: "password-missing-digit" });
+        }
+        
+        if (password.length < 8) {
+            return response.status(400).json({ error: "password-too-short" });
+        }
+        
+        if (!password.match(/[@$!%*?&]/)) {
+            return response.status(400).json({ error: "password-missing-special-character" });
+        }
+        
+        if (!password.match(/^[A-Za-z\d@$!%*?&]+$/)) {
+            return response.status(400).json({ error: "password-invalid-characters" });
+        }
+        
+        if(await User.findOne({email})){
+            return response.status(400).json({error: "email-listed"})
+        }
+        
         const user = await User.create({email, password})
         response.cookie("jwt", createToken(email, user.id), {
             maxAge,
@@ -25,12 +52,11 @@ export const signup = async (request,response,next) => {
             user:{
                 id: user.id,
                 email: user.email,
-                profileSetup: user.profileSetup,
-            
-        },
-    });
+                profileSetup: user.profileSetup,    
+            },
+        });
     }catch(error){
-        console.error("Error is here", error);
+        console.error("signup error", error);
         return response.status(500).send("Internal Server Error");
     }
 };
