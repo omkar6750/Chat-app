@@ -2,6 +2,10 @@ import {Server as SocketIoServer } from "socket.io";
 import Message from "./models/MessageModel.js";
 import Channel from "./models/ChannelModel.js";
 
+
+const MAX_MESSAGES = 50; 
+const MAX_CHANNEL_MESSAGES = 250;
+
 const setUpSocket = (server) => {
     const io = new SocketIoServer(server, {
         cors: {
@@ -11,6 +15,8 @@ const setUpSocket = (server) => {
         }
     });
     const userSocketMap = new Map();
+    const userMessageCount = new Map();
+    const channelMessageCount = new Map(); 
 
     const disconnect = (socket) => {
         for(const [userId, socketId] of userSocketMap.entries()){
@@ -20,7 +26,45 @@ const setUpSocket = (server) => {
                 break;
             }
         }
+    };
+
+    const deleteUserMessages = async (userId) => {
+        try {
+            await Message.deleteMany({ sender: userId });
+            console.log(`Deleted all messages for user: ${userId}`);
+        } catch (err) {
+            console.error("Error deleting messages:", err);
+        }
+    };
+
+    const deleteChannelMessages = async (channelId) => {
+        try {
+            await Message.deleteMany({ channelId });
+            console.log(`Deleted all messages in channel: ${channelId}`);
+        } catch (err) {
+            console.error("Error deleting channel messages:", err);
+        }
+    };
+
+    // Function to handle message deletion if the user exceeds MAX_MESSAGES
+    const checkAndDeleteMessages = async (userId) => {
+        const messageCount = userMessageCount.get(userId) || 0;
+
+        if (messageCount >= MAX_MESSAGES) {
+            await deleteUserMessages(userId);
+            userMessageCount.set(userId, 0);  // Reset message count after deletion
+        }
+    };
+
+    const checkAndDeleteChannelMessages = async(channelId) => {
+        const messageCount = channelMessageCount.get(channelId) || 0;
+
+        if(messageCount >= MAX_CHANNEL_MESSAGES){
+            await deleteChannelMessages(channelId);
+            channelMessageCount.set(channelId, 0);
+        }
     }
+
     const sendMessage = async(message) => {
         const senderSocketId = userSocketMap.get(message.sender);
         const recipientSocketId = userSocketMap.get(message.recipient);
@@ -37,6 +81,19 @@ const setUpSocket = (server) => {
         }
         if(recipientSocketId){
             io.to(recipientSocketId).emit("receiveMessage", messageData);
+        }
+
+        const senderMessageCount = await Message.find({sender: message.sender})
+        if(senderMessageCount.length >= MAX_MESSAGES){
+            try {
+                await Message.deleteMany({
+                    sender: message.sender, 
+                    recipient: message.recipient
+                })    
+            } catch (error) {
+                console.log(error)
+            }
+            io.to(senderSocketId).emit("error", "message-limit-exceeded")
         }
     }
     const sendChannelMessage = async(message) => {
@@ -78,10 +135,25 @@ const setUpSocket = (server) => {
                 io.to(adminSocketId).emit("receiveChannelMessage", finalData);
             }
         }
+
+        const channelMessageCountValue = channelMessageCount.get(channelId) || 0;
+        channelMessageCount.set(channelId, channelMessageCountValue + 1);
+
+        // Check and delete channel messages if the channel exceeds MAX_MESSAGES
+        await checkAndDeleteChannelMessages(channelId);
+        
+        
     }
+
+    const MAX_USERS = 10;
 
     io.on("connection", (socket) => {
         const userId = socket.handshake.query.userId;
+        if (userSocketMap.size >= MAX_USERS) {
+            socket.emit("error", "max-user-limit-reached");
+            disconnect(socket); // Disconnect excess users
+            return;
+        }
         if(userId) {
             userSocketMap.set(userId, socket.id)
             console.log("User connected: ", userId, socket.id)

@@ -37,7 +37,6 @@ const MessageContainer = () => {
           {withCredentials:true})
         if(response.data.messages){
           setSelectedChatMessages(response.data.messages);
-          consolelog(response.data.messages)
         }
       } catch (error) {
         console.log("Error getting messages:", error);
@@ -254,7 +253,7 @@ const MessageContainer = () => {
     )
   }
   return (
-    <div style={{ background: 'linear-gradient(135deg, #221c3c, #1c1d25)'}} className='flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full bg-gradient-to-t'>
+    <div style={{ background: 'linear-gradient(135deg, #221c3c, #1c1d25)', scrollbarWidth:'none'}} className='flex-1 overflow-y-auto p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full bg-gradient-to-t'>
       {renderMessages()}
       <div ref={scrollRef}></div>
       {

@@ -24,8 +24,17 @@ export const getMessages = async(request, response, next) => {
     }
 };
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 export const uploadFile = async(request, response, next) => {
     try{
+        if(request.file.size > MAX_FILE_SIZE){
+            try {
+                return response.status(400).json({error: "file-size-too-large"})
+            } catch (error) {
+                
+            }
+        }
         if(!request.file){
             return response.status(400).send("File is required");
         }
