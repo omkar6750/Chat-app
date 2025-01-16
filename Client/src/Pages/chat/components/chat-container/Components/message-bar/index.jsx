@@ -8,6 +8,7 @@ import {GrAttachment} from 'react-icons/gr'
 import { IoSend } from 'react-icons/io5';
 import { RiEmojiStickerLine } from "react-icons/ri";
 import { Socket } from 'socket.io-client';
+import { toast } from 'sonner';
 
 const MessageBar = () => {
 
@@ -85,6 +86,9 @@ const MessageBar = () => {
 
       
     } catch (error) {
+      if(error.response.data.error){
+        toast.error("File size too large")
+      }
       setIsUploading(false)
       console.log("Error uploading file:", error);
     }
@@ -93,6 +97,13 @@ const MessageBar = () => {
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji)
   } 
+
+  const handleEnterKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); 
+      handleSendMessage(); 
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside (event) {
@@ -112,7 +123,9 @@ const MessageBar = () => {
         <input type="text" 
         className='flex-1 p-4 bg-transparent rounded-md focus:border-none focus:outline-none'  placeholder='Enter message here'
         value={message}
-        onChange={(e)=>setMessage(e.target.value)} />
+        onChange={(e)=>setMessage(e.target.value)}
+        onKeyDown={handleEnterKeyDown}
+        />
         <button className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all '
         onClick={handleAttactmentClick}
         >
@@ -124,6 +137,7 @@ const MessageBar = () => {
           ref={fileInputRef} 
           className='hidden' 
           onChange={handleAttatchmentChange}
+          onClick={() =>toast("Max file size: 10mb")}
         />
         <div className="relative">
           <button className='text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all '

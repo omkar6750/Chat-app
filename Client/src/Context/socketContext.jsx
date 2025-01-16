@@ -3,6 +3,7 @@ import { useAppStore } from '@/store';
 import { HOST } from '@/Utils/constants';
 import {createContext, useContext, useEffect, useRef} from 'react'
 import { io } from 'socket.io-client';
+import { toast } from 'sonner';
 
 const SocketContext = createContext(null);
 
@@ -21,6 +22,15 @@ export const SocketProvider = ({children}) => {
 
             socket.current.on("connect", () => {
                 console.log("connected to socket server")
+            });
+
+            socket.current.on("error", (errorMessage) => {
+                if(errorMessage === "max-user-limit-reached"){
+                    toast.error("Max user limit reached try again after later");
+                }
+                if(errorMessage === "message-limit-exceeded"){
+                    toast.error("Max Number of messages reached.");
+                }
             });
 
             const handleReceiveMessage = (message) => {
