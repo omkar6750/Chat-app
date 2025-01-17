@@ -66,7 +66,7 @@ const Profile = () => {
     if(userInfo.profileSetup){
       navigate("/chat");
     }else{
-      toast.error("Plaese setup profile")
+      toast.error("Please setup profile")
     }
   };
 
@@ -156,7 +156,7 @@ const Profile = () => {
                     image ? <FaTrash className='text-white text-3xl cursor-pointer'
                     /> : 
                     <FaPlus className='text-white text-3xl cursor-pointer'
-                    onClick={handleImageChange}
+                    onClick={() =>handleImageChange}
                     />
                   }
                 </div>    
