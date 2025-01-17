@@ -22,6 +22,7 @@ import { CREATE_CHANNEL_ROUTE, GET_ALL_CONTACTS_ROUTE} from "@/Utils/constants"
 import { Button } from "@/components/ui/button"
 import { useAppStore } from "@/store"
 import MultipleSelector from "@/components/ui/MultipleSelector"
+import { toast } from "sonner"
 
 
 
@@ -44,10 +45,14 @@ const CreateChannel = () => {
     const createChannel = async() =>{
         try {
             if(channelName.length > 0 && selectedContacts.length >0){
-            const response = await apiClient.post(CREATE_CHANNEL_ROUTE, {
-                name: channelName,
-                members: selectedContacts.map((contact) => contact.value)
-            }, {withCredentials:true} );
+                if(selectedContacts.length > 5){
+                    toast.error("Member Limit Exceeded.")
+                }else{
+                const response = await apiClient.post(CREATE_CHANNEL_ROUTE, {
+                    name: channelName,
+                    members: selectedContacts.map((contact) => contact.value)
+                }, {withCredentials:true} );
+                }
             if(response.status === 201) {
                 setChannelName("");
                 setSelectedContacts([]);
@@ -82,7 +87,7 @@ const CreateChannel = () => {
         >
             <DialogContent className="bg-[#181920] border-none text-white w-[400px] h-[400px] flex flex-col ">
                 <DialogHeader>
-                    <DialogTitle>Please Fill Up The Details For New Channel</DialogTitle>
+                    <DialogTitle>Maximum 5 members per channel</DialogTitle>
                     <DialogDescription></DialogDescription>
                 </DialogHeader>
                 <div>

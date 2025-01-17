@@ -9,6 +9,7 @@ export const createChannel = async(request, response, next) => {
         const userId = request.userId;
         const admin = await User.findById(userId);
 
+        //add script to check if user is admin of more than x channels if yes reject request
         if(!admin){
             return response.status(400).send("admin not found");
         }
