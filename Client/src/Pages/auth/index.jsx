@@ -77,9 +77,6 @@ const auth = () => {
             case "internal-server-error":
                 toast.error("An unexpected error occurred. Please try again later.");
                 break;
-            case "email-password-required":
-                toast.error("Email and password are required.");
-                break;
             case "user-not-found":
                 toast.error("User not found.");
                 break;
