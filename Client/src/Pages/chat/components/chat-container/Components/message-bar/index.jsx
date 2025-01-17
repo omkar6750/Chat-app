@@ -1,4 +1,4 @@
-import { useSocket } from '@/Context/SocketContext';
+import { useSocket } from '@/Context/socketContext';
 import { apiClient } from '@/lib/api-client';
 import { useAppStore } from '@/store';
 import { UPLOAD_FILE_ROUTE } from '@/Utils/constants';
